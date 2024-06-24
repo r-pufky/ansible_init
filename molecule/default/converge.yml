@@ -1,0 +1,13 @@
+---
+# All tasks are well tested in respective roles; just execute an expected
+# playbook and ensure there's no runtime errors. No verification needed.
+- name: 'Default | converge'
+  hosts: all
+  gather_facts: true
+  tags: 'molecule-idempotence-notest'
+  tasks:
+    - name: 'Default | converge | apply init role'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.init'
+      vars:
+        init_connection_message_enable: false

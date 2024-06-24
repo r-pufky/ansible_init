@@ -1,0 +1,16 @@
+---
+###############################################################################
+# Init (Provision) Role Options
+###############################################################################
+
+# Last time {ROLE} options were validated against a default configuration.
+init_role_validate_date: '2024-06-24'
+init_role_validate_release: 'bookworm'
+
+# Default packages for {ROLE}.
+init_role_packages:
+  - 'sudo'
+  - 'ssh'  # meta package provides both ssh and sshd.
+
+# Default state for apt package installation. See ansible.builtin.apt.
+init_role_package_state: 'latest'

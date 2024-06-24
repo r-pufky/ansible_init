@@ -1,0 +1,104 @@
+---
+###############################################################################
+# Init (Provision) Role Configuration
+###############################################################################
+
+# Enable 'already provisioned' message and hard fail. Default: True.
+init_connection_message_enable: true
+
+# Enable distribution upgrades. Default: True.
+init_dist_upgrade_enable: true
+
+# Enable minimum packages required for ansible management. Default: True.
+init_package_install_enable: true
+
+# Enable account management. Default: True.
+init_account_management_enable: true
+
+# Enable SSH/SSHD management. Default: True.
+init_ssh_management_enable: true
+
+# Enable machine reboot after applying init/provisioning. Default: True.
+init_reboot_enable: true
+
+###############################################################################
+# Init (Provision) Accounts
+###############################################################################
+# User accounts are automatically detected based on the users_user_ prefix and
+# are created after groups users_group_ definitions.
+#
+# Provision accounts must be specified via users_* from r_pufky.srv.users
+# variables.
+#
+# Reference:
+# * https://github.com/r-pufky/ansible_users/blob/main/defaults/main/main.yml
+
+# Users to add during host configuration.
+#
+# List of user names to add to system (from users_user_{LABEL}). Configure user
+# based on how you wish to connect to hosts with ansible.
+#
+# This will enable an ansible user, provide root access via sudo, disable user
+# password, and enable SSH logins via public key.
+#
+# users_group_ansible:
+#   name: 'ansible'
+#   gid:  900
+#
+# users_user_ansible:
+#   user:
+#     name: 'ansible'
+#     group: '{{ users_group_ansible.name }}'
+#     groups:
+#       - '{{ users_group_ansible.name }}'
+#       - 'sudo'
+#       - 'ssh'
+#     uid: 900
+#     home: '/etc/ansible/.user'
+#     shell: '/bin/bash'
+#     create_home: true
+#     password: '!'
+#     password_lock: true
+#     update_password: 'always'
+#     expires: -1
+#     system: true
+#   include_group: true
+#   ssh:
+#     authorized_keys: '{{ vault_ansible_authorized_keys }}'
+#   # Execute all commands as all users: 'ansible ALL=(ALL) NOPASSWD: ALL'
+#   sudoers:
+#     commands: 'ALL'
+#     name: 'ansible'
+#     nopassword: true
+#     state: 'present'
+#     user: 'ansible'
+#     runas: 'ALL'
+#     validation: 'detect'
+#
+# init_accounts_users:
+#   - 'ansible'
+#
+# Default: [].
+init_accounts_users: []
+
+# User to remove during host configuration.
+#
+# List of user names to add to system (from users_user_{LABEL}).
+#
+# Files are explicitly kept to prevent unexpected data loss from files owned by
+# that user being deleted when the account is removed.
+#
+# init_accounts_users_absent:
+#   - 'delete_this_default_user'
+#
+# Default: [].
+init_accounts_users_absent: []
+
+###############################################################################
+# SSH Configuration
+###############################################################################
+# SSH/SSHD configuration is specified per r_pufky.srv.ssh variables. No
+# additional configuration.
+#
+# Reference:
+# * https://github.com/r-pufky/ansible_ssh/blob/main/defaults/main/main.yml

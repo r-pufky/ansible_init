@@ -1,0 +1,80 @@
+---
+dependency:
+  name: 'galaxy'
+driver:
+  name: 'podman'
+provisioner:
+  name: 'ansible'
+  config_options:
+    defaults:
+      interpreter_python: 'auto_silent'
+      callback_whitelist: 'profile_tasks, timer, yaml'
+    ssh_connection:
+      pipelining: false
+  inventory:
+    group_vars:
+      all:
+        users_group_ansible:
+          name: 'ansible'
+          gid: 900
+        users_user_ansible:
+          name: 'ansible'
+          group: '{{ users_group_ansible.name }}'
+          groups:
+            - '{{ users_group_ansible.name }}'
+            - 'sudo'
+          uid: 900
+          home: '/etc/ansible/.user'
+          shell: '/bin/bash'
+          create_home: true
+          password: '!'
+          password_lock: true
+          update_password: 'always'
+          expires: -1
+          system: true
+          extensions:
+            include_group: true
+            sudoers:
+              commands: 'ALL'
+              name: 'ansible'
+              nopassword: true
+              state: 'present'
+              user: 'ansible'
+              runas: 'ALL'
+              validation: 'detect'
+        init_accounts_users:
+          - 'ansible'
+        ssh_security_remove_host_keys:
+          - 'ssh_host_dsa_key'
+          - 'ssh_host_ecdsa_key'
+        ssh_security_regenerate_host_rsa_keys: 4096
+        ssh_server_host_key:
+          - '/etc/ssh/ssh_host_rsa_key'
+          - '/etc/ssh/ssh_host_ed25519_key'
+        ssh_server_permit_root_login: false
+        ssh_server_ignore_user_known_hosts: true
+        ssh_server_password_authentication: false
+        ssh_server_use_pam: true
+        ssh_server_allow_agent_forwarding: false
+        ssh_server_print_motd: false
+        ssh_server_subsystem:
+          - system: 'sftp'
+            config: 'internal-sftp'
+        ssh_server_allow_groups: ['ssh']
+
+platforms:
+  - name: 'debian-12'
+    image: 'ghcr.io/hifis-net/debian-systemd:12'
+    systemd: 'always'
+    volumes:
+      - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
+    capabilities:
+      - 'SYS_ADMIN'
+    command: '/lib/systemd/systemd'
+    pre_build_image: true
+verifier:
+  name: 'ansible'
+lint: |
+  set -e
+  yamllint .
+  ansible-lint .

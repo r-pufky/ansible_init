@@ -1,0 +1,87 @@
+---
+###############################################################################
+# Init (Provision) New Machine
+###############################################################################
+# Provision a fresh system for ansible support with minimal changes.
+#
+# Enable a system to be manged by standard ansible playbooks:
+# * Run distribution upgrade (without source changes)
+# * Add ansible user accounts via r_pufky.srv.users
+# * Apply SSH policy via r_pufky.srv.ssh
+#
+# Reference:
+# * https://www.rubytreesoftware.com/resources/ansible-bootstrap-playbook/
+# * https://www.redhat.com/sysadmin/harden-new-system-ansible
+
+- name: 'HOST CONNECTION WARNING'
+  when: init_connection_message_enable
+  block:
+    - name: 'HOST CONNECTION WARNING'
+      ansible.builtin.debug:
+        msg: |
+          Connection will fail for all tasks if host has already init'ed.
+          Including the above 'Gathering Facts' and role tasks below.
+
+          This is expected.
+
+          Host may already be provisioned; use standard ansible playbook.
+
+- name: 'Distribution upgrade'
+  when: init_dist_upgrade_enable
+  block:
+    - name: 'Distribution upgrade in progress (may take a while)'
+      ansible.builtin.debug:
+        msg: |
+          Distribution is being upgraded. This will take a few minutes.
+
+    - name: 'Upgrade distribution packages'
+      ansible.builtin.apt:
+        upgrade: 'dist'
+        state: 'present'
+        update_cache: true
+      async: 600
+      poll: 5
+
+- name: 'Install minimum packages for ansible'
+  ansible.builtin.apt:
+    name: '{{ init_role_packages }}'
+    state: '{{ init_role_package_state }}'
+  when: init_package_install_enable
+
+- name: 'Manage accounts'
+  when: init_account_management_enable
+  block:
+    - name: 'Add user accounts required for ansible management'
+      ansible.builtin.include_role:
+        name: 'r_pufky.srv.users'
+        tasks_from: 'user.yml'
+      loop: '{{ init_accounts_users | default([]) }}'
+      loop_control:
+        loop_var: user
+      no_log: true  # passwords
+
+    # Remove after for cases where we are logged in as root and root disabled.
+    - name: 'Remove user accounts'
+      ansible.builtin.user:
+        name: '{{ item }}'
+        force: false
+        remove: false
+        state: 'absent'
+      loop: '{{ init_accounts_users_absent | default([]) }}'
+
+- name: 'Manage SSH/SSHD'
+  ansible.builtin.include_role:
+    name: 'r_pufky.srv.ssh'
+    tasks_from: 'main.yml'
+  when: init_ssh_management_enable
+
+# ansible.builtin.reboot will fail to auto-reconnect as the account used to
+# provision machine will generally no longer be valid after provisioning.
+# Instead manually reboot and allow role to finish successfully.
+- name: 'Reboot'
+  ansible.builtin.shell: 'sleep 2 && /sbin/reboot'
+  changed_when: false
+  failed_when: false
+  async: 360
+  poll: 0
+  when: init_reboot_enable
