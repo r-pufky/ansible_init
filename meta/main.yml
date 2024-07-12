@@ -4,7 +4,7 @@ galaxy_info:
   description: 'Init (provision) fresh machines for ansible ansible use.'
   company: 'N/A'
   license: 'AGPL-3.0 License'
-  min_ansible_version: '2.16.0'
+  min_ansible_version: '2.17.0'
 
   platforms:
     - name: 'Debian'
