@@ -72,7 +72,6 @@
 - name: 'Manage SSH/SSHD'
   ansible.builtin.include_role:
     name: 'r_pufky.srv.ssh'
-    tasks_from: 'main.yml'
   when: init_ssh_management_enable
 
 # ansible.builtin.reboot will fail to auto-reconnect as the account used to
