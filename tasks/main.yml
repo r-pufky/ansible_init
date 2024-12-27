@@ -26,27 +26,15 @@
 
           Host may already be provisioned; use standard ansible playbook.
 
-- name: 'Distribution upgrade'
-  when: init_dist_upgrade_enable
-  block:
-    - name: 'Distribution upgrade in progress (may take a while)'
-      ansible.builtin.debug:
-        msg: |
-          Distribution is being upgraded. This will take a few minutes.
-
-    - name: 'Upgrade distribution packages'
-      ansible.builtin.apt:
-        upgrade: 'dist'
-        state: 'present'
-        update_cache: true
-      async: 600
-      poll: 5
-
-- name: 'Install minimum packages for ansible'
-  ansible.builtin.apt:
-    name: '{{ init_role_packages }}'
-    state: '{{ init_role_package_state }}'
+- name: 'Install packages'
   when: init_package_install_enable
+  ansible.builtin.include_role:
+    name: 'r_pufky.srv.apt'
+  vars:
+    apt_packages:
+      - '{{ init_role_packages if init_package_install_enable else [] }}'
+    apt_package_update_cache: true
+    apt_dist_upgrade_enable: '{{ init_dist_upgrade_enable }}'
 
 - name: 'Manage accounts'
   when: init_account_management_enable
@@ -70,17 +58,17 @@
       loop: '{{ init_accounts_users_absent | default([]) }}'
 
 - name: 'Manage SSH/SSHD'
+  when: init_ssh_management_enable
   ansible.builtin.include_role:
     name: 'r_pufky.srv.ssh'
-  when: init_ssh_management_enable
 
 # ansible.builtin.reboot will fail to auto-reconnect as the account used to
-# provision machine will generally no longer be valid after provisioning.
-# Instead manually reboot and allow role to finish successfully.
+# provision machine. Account will generally no longer be valid after
+# provisioning. Instead manually reboot and allow role to finish successfully.
 - name: 'Reboot'
+  when: init_reboot_enable
   ansible.builtin.shell: 'sleep 2 && /sbin/reboot'
   changed_when: false
   failed_when: false
-  async: 360
-  poll: 0
-  when: init_reboot_enable
+  async: '{{ init_timeout | default(init_role_timeout) }}'
+  poll: 5

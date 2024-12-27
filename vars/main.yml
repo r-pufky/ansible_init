@@ -9,8 +9,8 @@ init_role_validate_release: 'bookworm'
 
 # Default packages for {ROLE}.
 init_role_packages:
-  - 'sudo'
-  - 'ssh'  # meta package provides both ssh and sshd.
+  - 'sudo'  # users requiring sudo
+  - 'ssh'  # ssh, sshd
 
-# Default state for apt package installation. See ansible.builtin.apt.
-init_role_package_state: 'latest'
+# Default timeout for long actions (seconds).
+init_role_timeout: 600

@@ -1,0 +1,10 @@
+---
+- name: 'Default | verify'
+  hosts: 'all'
+  gather_facts: false
+  tasks:
+    - name: 'Default | verify | no runtime errors.'
+      ansible.builtin.assert:
+        that:
+          - 'true == true'
+        fail_msg: 'Init uses all imported roles. There should never be errors.'

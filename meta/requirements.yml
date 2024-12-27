@@ -1,7 +1,5 @@
 ---
 collections:
-  # https://github.com/r-pufky/ansible_collection_srv
-  # users, ssh
-  - r_pufky.srv
+  - 'r_pufky.srv'  # https://github.com/r-pufky/ansible_collection_srv
 
 roles: []
