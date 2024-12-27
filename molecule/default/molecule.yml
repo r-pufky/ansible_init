@@ -14,6 +14,8 @@ provisioner:
   inventory:
     group_vars:
       all:
+        init_testing_enable: true
+        init_connection_message_enable: false
         users_group_ansible:
           name: 'ansible'
           gid: 900
@@ -63,13 +65,11 @@ provisioner:
         ssh_server_allow_groups: ['ssh']
 
 platforms:
-  - name: 'debian-12'
+  - name: 'debian-12-init'
     image: 'ghcr.io/hifis-net/debian-systemd:12'
     systemd: 'always'
     volumes:
       - '/sys/fs/cgroup:/sys/fs/cgroup:ro'
-    capabilities:
-      - 'SYS_ADMIN'
     command: '/lib/systemd/systemd'
     pre_build_image: true
 verifier:

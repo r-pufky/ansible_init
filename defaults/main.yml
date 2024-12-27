@@ -9,6 +9,9 @@ init_connection_message_enable: true
 # Enable distribution upgrades. Default: True.
 init_dist_upgrade_enable: true
 
+# Timeout for long running actions (seconds). Default: 600.
+init_timeout: 600
+
 # Enable minimum packages required for ansible management. Default: True.
 init_package_install_enable: true
 

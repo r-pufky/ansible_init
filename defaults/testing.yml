@@ -1,0 +1,17 @@
+---
+###############################################################################
+# Init Testing
+###############################################################################
+# Options exposed specifically for unit testing without hardware-level
+# interactions that are impossible in containers. These are not needed in
+# normal operation.
+
+# Enable testing.
+#
+# This will disable forced reboots.
+#
+# TODO(role): migrate testing to use virtual machines instead of containers
+#     and remove testing variable unless API injection is required.
+#
+# Default: False.
+init_testing_enable: false
