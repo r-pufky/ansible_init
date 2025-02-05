@@ -7,10 +7,13 @@
 init_role_validate_date: '2024-06-24'
 init_role_validate_release: 'bookworm'
 
-# Default packages for {ROLE}.
-init_role_packages:
-  - 'sudo'  # users requiring sudo
-  - 'ssh'  # ssh, sshd
-
 # Default timeout for long actions (seconds).
 init_role_timeout: 600
+
+###############################################################################
+# APT Packages
+###############################################################################
+
+init_role_packages:
+  - 'sudo'  # users requiring sudo.
+  - 'ssh'  # ssh, sshd.
