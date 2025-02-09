@@ -3,16 +3,17 @@
 # Init (Provision) Role Configuration
 ###############################################################################
 
-# Enable 'already provisioned' message and hard fail. Default: True.
+# Enable 'already provisioned' message. Default: True.
 init_connection_message_enable: true
 
 # Enable distribution upgrades. Default: True.
 init_dist_upgrade_enable: true
 
-# Timeout for long running actions (seconds). Default: 600.
-init_timeout: 600
-
-# Enable minimum packages required for ansible management. Default: True.
+# Enable minimum packages required for ansible management.
+#
+# packages: ssh, sudo
+#
+# Default: True.
 init_package_install_enable: true
 
 # Enable account management. Default: True.
@@ -20,9 +21,6 @@ init_account_management_enable: true
 
 # Enable SSH/SSHD management. Default: True.
 init_ssh_management_enable: true
-
-# Enable machine reboot after applying init/provisioning. Default: True.
-init_reboot_enable: true
 
 ###############################################################################
 # Init (Provision) Accounts
@@ -32,6 +30,19 @@ init_reboot_enable: true
 #
 # Provision accounts must be specified via users_* from r_pufky.srv.users
 # variables.
+#
+# WARNING
+# > Specific user modifications on account that is being used for init may
+# > cause non-deterministic behavior while role is executing.
+# >
+# > If provisioning a machine for the first time, ensure that the **user**
+# > connected to run `r_pufky.srv.init` is not the user being added or
+# > modified.
+# >
+# > **HIGHLY** recommend init adds an ansible user via root or the first user.
+# >
+# > Leave all other user modification to other roles via the ansible user. Many
+# > pre-installed accounts will not have sudo access by default.
 #
 # Reference:
 # * https://github.com/r-pufky/ansible_users/blob/main/defaults/main/main.yml
@@ -60,8 +71,8 @@ init_reboot_enable: true
 #     home: '/etc/ansible/.user'
 #     shell: '/bin/bash'
 #     create_home: true
-#     password: '!'
-#     password_lock: true
+#     password: '*'
+#     password_lock: false
 #     update_password: 'always'
 #     expires: -1
 #     system: true

@@ -13,18 +13,17 @@
 # * https://www.rubytreesoftware.com/resources/ansible-bootstrap-playbook/
 # * https://www.redhat.com/sysadmin/harden-new-system-ansible
 
-- name: 'HOST CONNECTION WARNING'
+# Blocks will not catch unreachable hosts. Warn early.
+- name: 'Init | HOST CONNECTION WARNING'
   when: init_connection_message_enable
-  block:
-    - name: 'HOST CONNECTION WARNING'
-      ansible.builtin.debug:
-        msg: |
-          Connection will fail for all tasks if host has already init'ed.
-          Including the above 'Gathering Facts' and role tasks below.
+  ansible.builtin.debug:
+    msg: |
+      Connection will fail for all tasks if host has already init'ed.
+      Including 'Gathering Facts' and role tasks below.
 
-          This is expected.
+      This is expected.
 
-          Host may already be provisioned; use standard ansible playbook.
+      Host may already be provisioned; use standard ansible playbook.
 
 - name: 'Install packages'
   when: init_package_install_enable
@@ -39,6 +38,7 @@
 - name: 'Manage accounts'
   when: init_account_management_enable
   block:
+    # Modifying active user will result in non-deterministic results.
     - name: 'Add user accounts required for ansible management'
       ansible.builtin.include_role:
         name: 'r_pufky.srv.users'
@@ -61,14 +61,3 @@
   when: init_ssh_management_enable
   ansible.builtin.include_role:
     name: 'r_pufky.srv.ssh'
-
-# ansible.builtin.reboot will fail to auto-reconnect as the account used to
-# provision machine. Account will generally no longer be valid after
-# provisioning. Instead manually reboot and allow role to finish successfully.
-- name: 'Reboot'
-  when: init_reboot_enable
-  ansible.builtin.shell: 'sleep 2 && /sbin/reboot'
-  changed_when: false
-  failed_when: false
-  async: '{{ init_timeout | default(init_role_timeout) }}'
-  poll: 5

@@ -15,7 +15,6 @@ provisioner:
   inventory:
     group_vars:
       all:
-        init_reboot_enable: false
         init_connection_message_enable: false
         users_group_ansible:
           name: 'ansible'

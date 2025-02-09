@@ -7,9 +7,6 @@
 init_role_validate_date: '2024-06-24'
 init_role_validate_release: 'bookworm'
 
-# Default timeout for long actions (seconds).
-init_role_timeout: 600
-
 ###############################################################################
 # APT Packages
 ###############################################################################

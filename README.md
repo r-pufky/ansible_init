@@ -23,9 +23,22 @@ standard playbooks.
 
 See defaults (and related role defaults) for in-depth documentation.
 
+### Warning
+> Specific user modifications on account that is being used for init may cause
+> non-deterministic behavior while role is executing.
+>
+> If provisioning a machine for the first time, ensure that the **user**
+> connected to run `r_pufky.srv.init` is not the user being added or modified.
+
+**HIGHLY** recommend init adds an ansible user via root or the first user.
+
+Leave all other user modification to other roles via the ansible user. Many
+pre-installed accounts will not have sudo access by default.
+
 ### Ansible Account
 Define the ansible account for all hosts and specify that user to be created
 with the init/provisioning role.
+
 
 group_vars/all/users/ansible.yml
 ``` yaml
@@ -43,8 +56,7 @@ users_user_ansible:
   home: '/etc/ansible/.user'
   shell: '/bin/bash'
   create_home: true
-  password: '!'
-  password_lock: true
+  password: '*'  # see debian SSH pubkey changes
   update_password: 'always'
   expires: -1
   system: true
@@ -64,7 +76,6 @@ users_user_ansible:
 init_accounts_users:
   - 'ansible'
 ```
-
 ### SSH/SSHD Management
 See [r_pufky.srv.ssh](https://github.com/r-pufky/ansible_ssh/blob/main/defaults/main/)
 for detailed SSH/SSHD configuration.
@@ -84,59 +95,60 @@ ssh_server_host_key:
 ssh_server_permit_root_login: false
 ssh_server_ignore_user_known_hosts: true
 ssh_server_password_authentication: false
-ssh_server_use_pam: true
 ssh_server_allow_agent_forwarding: false
 ssh_server_print_motd: false
-ssh_server_subsystem:
-  - system: 'sftp'
-    config: 'internal-sftp'
-ssh_server_allow_groups: ['ssh']
+ssh_server_allow_groups: ['_ssh']
 ```
 
 ### Provision Playbook
-Create plays specifically for **root** user and **user** provisioning. Force
-use of `provision_*` tag for target provisioning.
+Create plays specifically for **root** user **su** and **sudo** provisioning.
 
-provision.yml
+init.yml
 ``` yaml
-- name: 'Provision hosts via root user'
+- name: 'Init | root'
   hosts: 'all'
   remote_user: 'root'
-  tasks:
-    - name: 'Provision hosts via root user'
-      ansible.builtin.include_role:
-        name: 'r_pufky.srv.init'
+  roles:
+    - 'r_pufky.srv.init'
   tags:
-    - 'provision_root'
+    - 'root'
     - 'never'
 
-- name: 'Provision hosts via user with sudo'
+- name: 'Init | user su'
   hosts: 'all'
   become: true
-  tasks:
-    - name: 'Provision hosts via user with sudo'
-      ansible.builtin.include_role:
-        name: 'r_pufky.srv.init'
+  become_method: 'ansible.builtin.su'
+  roles:
+    - 'r_pufky.srv.init'
   tags:
-    - 'provision_user'
+    - 'su'
+    - 'never'
+
+- name: 'Init | user sudo'
+  hosts: 'all'
+  become: true
+  become_method: 'ansible.builtin.sudo'
+  roles:
+    - 'r_pufky.srv.init'
+  tags:
+    - 'sudo'
     - 'never'
 ```
 
-#### Provisioning with ROOT account
+#### Init using root account
 ``` bash
-ansible-playbook provision.yml --tags provision_root --limit {HOST} --ask-pass
+ansible-playbook init.yml --tags root --limit {HOST} --user root --ask-pass
 ```
 
-#### Provisioning with USER account with SUDO access
-
-Copy user public key over if needed.
+#### Init using {USER} account with su
 ``` bash
-ssh-copy-id -i {USER}/host_ssh_key.pub {USER}@{HOST}
+ansible-playbook init.yml --tags su --limit {HOST} --user {USER} --ask-pass --ask-become-pass
 ```
 
-Provision
+#### Init using {USER} account with sudo
 ``` bash
-ansible-playbook provision.yml --tags provision_user --limit {HOST} --user {USER} --ask-become-pass
+# ssh-copy-id -i {USER}/host_ssh_key.pub {USER}@{HOST}  # if pubkey enabled
+ansible-playbook init.yml --tags user --limit {HOST} --user {USER} --ask-pass --ask-become-pass
 ```
 
 ## Development
