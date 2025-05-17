@@ -6,19 +6,19 @@
 #
 # Enable a system to be manged by standard ansible playbooks:
 # * Run distribution upgrade (without source changes)
-# * Add ansible user accounts via r_pufky.srv.users
-# * Apply SSH policy via r_pufky.srv.ssh
+# * Add ansible user accounts via r_pufky.deb.users
+# * Apply SSH policy via r_pufky.deb.ssh
 #
 # Reference:
 # * https://www.rubytreesoftware.com/resources/ansible-bootstrap-playbook/
 # * https://www.redhat.com/sysadmin/harden-new-system-ansible
 
 # Blocks will not catch unreachable hosts. Warn early.
-- name: 'Init | HOST CONNECTION WARNING'
+- name: 'Init | HOST CONNECTION WARNING ⚠'
   when: init_connection_message_enable
   ansible.builtin.debug:
     msg: |
-      Connection will fail for all tasks if host has already init'ed.
+      ⚠ Connection will fail for all tasks if host has already init'ed.
       Including 'Gathering Facts' and role tasks below.
 
       This is expected.
@@ -28,7 +28,7 @@
 - name: 'Install packages'
   when: init_package_install_enable
   ansible.builtin.include_role:
-    name: 'r_pufky.srv.apt'
+    name: 'r_pufky.deb.apt'
   vars:
     apt_packages:
       - '{{ init_role_packages if init_package_install_enable else [] }}'
@@ -41,7 +41,7 @@
     # Modifying active user will result in non-deterministic results.
     - name: 'Add user accounts required for ansible management'
       ansible.builtin.include_role:
-        name: 'r_pufky.srv.users'
+        name: 'r_pufky.deb.users'
         tasks_from: 'user.yml'
       loop: '{{ init_accounts_users | default([]) }}'
       loop_control:
@@ -59,4 +59,4 @@
 - name: 'Manage SSH/SSHD'
   when: init_ssh_management_enable
   ansible.builtin.include_role:
-    name: 'r_pufky.srv.ssh'
+    name: 'r_pufky.deb.ssh'

@@ -1,5 +1,6 @@
 ---
 galaxy_info:
+  role_name: 'init'
   author: 'r_pufky'
   description: 'Init (provision) fresh machines for ansible ansible use.'
   company: 'N/A'

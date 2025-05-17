@@ -5,6 +5,8 @@
   tasks:
     - name: 'Default | verify | no runtime errors.'
       ansible.builtin.assert:
+        quiet: true
         that:
           - 'true == true'
-        fail_msg: 'Init uses all imported roles. There should never be errors.'
+        fail_msg: >
+          ✘ Init uses all imported roles. There should never be errors.

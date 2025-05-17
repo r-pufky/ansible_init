@@ -1,5 +1,12 @@
 ---
-# No testing needed -- all imported roles; ensure no run-time errors.
+###############################################################################
+# Default
+###############################################################################
+# All tasks are imported from roles; ensure role is applied without errors.
+#
+# Tests:
+# * Ensure no run-time errors.
+
 dependency:
   name: 'galaxy'
 driver:

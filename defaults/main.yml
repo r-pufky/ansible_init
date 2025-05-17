@@ -28,7 +28,7 @@ init_ssh_management_enable: true
 # User accounts are automatically detected based on the users_user_ prefix and
 # are created after groups users_group_ definitions.
 #
-# Provision accounts must be specified via users_* from r_pufky.srv.users
+# Provision accounts must be specified via users_* from r_pufky.deb.users
 # variables.
 #
 # WARNING
@@ -36,7 +36,7 @@ init_ssh_management_enable: true
 # > cause non-deterministic behavior while role is executing.
 # >
 # > If provisioning a machine for the first time, ensure that the **user**
-# > connected to run `r_pufky.srv.init` is not the user being added or
+# > connected to run `r_pufky.deb.init` is not the user being added or
 # > modified.
 # >
 # > **HIGHLY** recommend init adds an ansible user via root or the first user.
@@ -111,7 +111,7 @@ init_accounts_users_absent: []
 ###############################################################################
 # SSH Configuration
 ###############################################################################
-# SSH/SSHD configuration is specified per r_pufky.srv.ssh variables. No
+# SSH/SSHD configuration is specified per r_pufky.deb.ssh variables. No
 # additional configuration.
 #
 # Reference:

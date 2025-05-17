@@ -4,17 +4,15 @@ Init and provision machines for ansible management.
 ## Requirements
 [supported platforms](https://github.com/r-pufky/ansible_init/blob/main/meta/main.yml)
 
-[collections/roles](https://github.com/r-pufky/ansible_init/blob/main/meta/requirements.yml)
-
 ## Role Variables
 [defaults](https://github.com/r-pufky/ansible_init/tree/main/defaults/main.yaml)
 
 ## Dependencies
-Part of the [r_pufky.srv](https://github.com/r-pufky/ansible_collection_srv)
-collection.
+**galaxy-ng** roles cannot be used independently. Part of
+[r_pufky.deb](https://github.com/r-pufky/ansible_collection_deb) collection.
 
-A user with **root** privileges (ability to modify users, groups, sudo, services)
-with remote access to the system.
+A user with **root** privileges (ability to modify users, groups, sudo,
+services) with remote access to the system.
 
 ## Example Playbook
 Assumes target machine is a fresh install. This role will update the system,
@@ -28,7 +26,7 @@ See defaults (and related role defaults) for in-depth documentation.
 > non-deterministic behavior while role is executing.
 >
 > If provisioning a machine for the first time, ensure that the **user**
-> connected to run `r_pufky.srv.init` is not the user being added or modified.
+> connected to run `r_pufky.deb.init` is not the user being added or modified.
 
 **HIGHLY** recommend init adds an ansible user via root or the first user.
 
@@ -38,7 +36,6 @@ pre-installed accounts will not have sudo access by default.
 ### Ansible Account
 Define the ansible account for all hosts and specify that user to be created
 with the init/provisioning role.
-
 
 group_vars/all/users/ansible.yml
 ``` yaml
@@ -77,7 +74,7 @@ init_accounts_users:
   - 'ansible'
 ```
 ### SSH/SSHD Management
-See [r_pufky.srv.ssh](https://github.com/r-pufky/ansible_ssh/blob/main/defaults/main/)
+See [r_pufky.deb.ssh](https://github.com/r-pufky/ansible_ssh/blob/main/defaults/main/)
 for detailed SSH/SSHD configuration.
 
 Secure SSHD and configure SSH for all systems.
@@ -109,7 +106,7 @@ init.yml
   hosts: 'all'
   remote_user: 'root'
   roles:
-    - 'r_pufky.srv.init'
+    - 'r_pufky.deb.init'
   tags:
     - 'root'
     - 'never'
@@ -119,7 +116,7 @@ init.yml
   become: true
   become_method: 'ansible.builtin.su'
   roles:
-    - 'r_pufky.srv.init'
+    - 'r_pufky.deb.init'
   tags:
     - 'su'
     - 'never'
@@ -129,7 +126,7 @@ init.yml
   become: true
   become_method: 'ansible.builtin.sudo'
   roles:
-    - 'r_pufky.srv.init'
+    - 'r_pufky.deb.init'
   tags:
     - 'sudo'
     - 'never'
@@ -152,7 +149,7 @@ ansible-playbook init.yml --tags user --limit {HOST} --user {USER} --ask-pass --
 ```
 
 ## Development
-Configure [environment](https://github.com/r-pufky/ansible_collection_srv/blob/main/docs/dev/environment/README.md)
+Configure [environment](https://github.com/r-pufky/ansible_collection_docs/blob/main/dev/environment/README.md)
 
 Run all unit tests:
 ``` bash
