@@ -1,8 +1,8 @@
 ---
-- name: 'Default | converge'
+- name: 'Converge'
   hosts: 'all'
   gather_facts: false
   tasks:
-    - name: 'Default | converge | apply init role'
+    - name: 'Converge | apply init role'
       ansible.builtin.include_role:
         name: 'r_pufky.deb.init'

@@ -1,9 +1,9 @@
 ---
-- name: 'Default | verify'
+- name: 'Verify'
   hosts: 'all'
   gather_facts: false
   tasks:
-    - name: 'Default | verify | no runtime errors.'
+    - name: 'Verify | no runtime errors.'
       ansible.builtin.assert:
         quiet: true
         that:

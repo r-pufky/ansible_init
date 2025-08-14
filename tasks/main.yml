@@ -18,12 +18,16 @@
   when: init_connection_message_enable
   ansible.builtin.debug:
     msg: |
-      ⚠ Connection will fail for all tasks if host has already init'ed.
-      Including 'Gathering Facts' and role tasks below.
-
-      This is expected.
-
-      Host may already be provisioned; use standard ansible playbook.
+      ╭───────────────────────────────────────────────────────────────────╮
+      │                                                                   │
+      │  Connection will fail for all tasks if host has already init'ed,  │
+      │  including 'Gathering Facts' and role tasks below.                │
+      │                                                                   │
+      │  This is expected.                                                │
+      │                                                                   │
+      │  Host may already be provisioned; use standard ansible playbook.  │
+      │                                                                   │
+      ╰───────────────────────────────────────────────────────────────────╯
 
 - name: 'Install packages'
   when: init_package_install_enable
