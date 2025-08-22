@@ -20,14 +20,14 @@
     msg: |
       ╭───────────────────────────────────────────────────────────────────╮
       │                                                                   │
-      │  Connection will fail for all tasks if host has already init'ed,  │
-      │  including 'Gathering Facts' and role tasks below.                │
+      │                     HOST CONNECTION WARNING.                      │
       │                                                                   │
-      │  This is expected.                                                │
-      │                                                                   │
-      │  Host may already be provisioned; use standard ansible playbook.  │
-      │                                                                   │
-      ╰───────────────────────────────────────────────────────────────────╯
+      ├───────────────────────────────────────────────────────────────────╯
+      │ Connection WILL fail for all tasks if host has already init'ed,
+      │ including 'Gathering Facts' and role tasks below. In this case the
+      │ Host may already be provisioned; use standard ansible playbook.
+      │
+      │ This is expected.
 
 - name: 'Install packages'
   when: init_package_install_enable

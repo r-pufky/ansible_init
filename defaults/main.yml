@@ -3,23 +3,23 @@
 # Init (Provision) Role Configuration
 ###############################################################################
 
-# Enable 'already provisioned' message. Default: True.
+# Enable 'already provisioned' message? Default: True.
 init_connection_message_enable: true
 
-# Enable distribution upgrades. Default: True.
+# Enable distribution upgrades? Default: True.
 init_dist_upgrade_enable: true
 
-# Enable minimum packages required for ansible management.
+# Enable minimum packages required for ansible management?
 #
 # packages: ssh, sudo
 #
 # Default: True.
 init_package_install_enable: true
 
-# Enable account management. Default: True.
+# Enable account management? Default: True.
 init_account_management_enable: true
 
-# Enable SSH/SSHD management. Default: True.
+# Enable SSH/SSHD management? Default: True.
 init_ssh_management_enable: true
 
 ###############################################################################
