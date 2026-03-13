@@ -22,7 +22,7 @@ provisioner:
   inventory:
     group_vars:
       all:
-        init_connection_message_enable: false
+        init_flg_msg_provision: false
         users_group_ansible:
           name: 'ansible'
           gid: 900
@@ -51,7 +51,7 @@ provisioner:
               user: 'ansible'
               runas: 'ALL'
               validation: 'detect'
-        init_accounts_users:
+        init_cfg_users:
           - 'ansible'
         ssh_security_remove_host_keys:
           - 'ssh_host_dsa_key'
@@ -70,9 +70,8 @@ provisioner:
           - system: 'sftp'
             config: 'internal-sftp'
         ssh_server_allow_groups: ['ssh']
-
 platforms:
-  - name: 'init-debian-13-default'
+  - name: 'init-default'
     image: 'ghcr.io/hifis-net/debian-systemd:13'
     systemd: 'always'
     volumes:
@@ -81,21 +80,12 @@ platforms:
     pre_build_image: true
 verifier:
   name: 'ansible'
-lint: |
-  set -e
-  yamllint .
-  ansible-lint .
 scenario:
   test_sequence:
-    # - 'dependency'
-    # - 'cleanup'
     - 'destroy'
     - 'syntax'
     - 'create'
-    # - 'prepare'
     - 'converge'
     - 'idempotence'
-    # - 'side_effect'
     - 'verify'
-    # - 'cleanup'
     - 'destroy'

@@ -3,6 +3,6 @@
   hosts: 'all'
   gather_facts: false
   tasks:
-    - name: 'Converge | apply init role'
+    - name: 'Converge | role | r_pufky.deb.init'
       ansible.builtin.include_role:
         name: 'r_pufky.deb.init'

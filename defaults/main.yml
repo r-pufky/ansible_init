@@ -1,29 +1,29 @@
 ---
 ###############################################################################
-# Init (Provision) Role Configuration
+# Service
 ###############################################################################
 
-# Enable 'already provisioned' message? Default: True.
-init_connection_message_enable: true
+# 1. Enable 'already provisioned' message? Default: True.
+init_flg_msg_provision: true
 
-# Enable distribution upgrades? Default: True.
-init_dist_upgrade_enable: true
+# 2. Enable distribution upgrades? Default: True.
+init_flg_dist_upgrade: true
 
-# Enable minimum packages required for ansible management?
+# 3. Install minimum packages required for ansible management?
 #
 # packages: ssh, sudo
 #
 # Default: True.
-init_package_install_enable: true
+init_flg_packages: true
 
-# Enable account management? Default: True.
-init_account_management_enable: true
+# 4. Enable user account management? Default: True.
+init_flg_users: true
 
-# Enable SSH/SSHD management? Default: True.
-init_ssh_management_enable: true
+# 5. Enable SSH/SSHD management? Default: True.
+init_flg_ssh: true
 
 ###############################################################################
-# Init (Provision) Accounts
+# Accounts
 ###############################################################################
 # User accounts are automatically detected based on the users_user_ prefix and
 # are created after groups users_group_ definitions.
@@ -38,6 +38,9 @@ init_ssh_management_enable: true
 # > If provisioning a machine for the first time, ensure that the **user**
 # > connected to run `r_pufky.deb.init` is not the user being added or
 # > modified.
+# >
+# > The provisioning user can be removed with standard user management in
+# > `r_pufky.deb.users` after init.
 # >
 # > **HIGHLY** recommend init adds an ansible user via root or the first user.
 # >
@@ -89,11 +92,11 @@ init_ssh_management_enable: true
 #     runas: 'ALL'
 #     validation: 'detect'
 #
-# init_accounts_users:
+# init_cfg_users:
 #   - 'ansible'
 #
 # Default: [].
-init_accounts_users: []
+init_cfg_users: []
 
 # User to remove during host configuration.
 #
@@ -102,11 +105,11 @@ init_accounts_users: []
 # Files are explicitly kept to prevent unexpected data loss from files owned by
 # that user being deleted when the account is removed.
 #
-# init_accounts_users_absent:
+# init_cfg_users_absent:
 #   - 'delete_this_default_user'
 #
 # Default: [].
-init_accounts_users_absent: []
+init_cfg_users_absent: []
 
 ###############################################################################
 # SSH Configuration

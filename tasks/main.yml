@@ -5,62 +5,60 @@
 # Provision a fresh system for ansible support with minimal changes.
 #
 # Enable a system to be manged by standard ansible playbooks:
-# * Run distribution upgrade (without source changes)
-# * Add ansible user accounts via r_pufky.deb.users
-# * Apply SSH policy via r_pufky.deb.ssh
+# * Run distribution upgrade (without source changes).
+# * Add ansible user accounts via r_pufky.deb.users.
+# * Apply SSH policy via r_pufky.deb.ssh.
 #
 # Reference:
 # * https://www.rubytreesoftware.com/resources/ansible-bootstrap-playbook/
 # * https://www.redhat.com/sysadmin/harden-new-system-ansible
 
 # Blocks will not catch unreachable hosts. Warn early.
-- name: 'Init | HOST CONNECTION WARNING ⚠'
-  when: init_connection_message_enable
+- name: '⚠ HOST CONNECTION WARNING ⚠'
+  when: init_flg_msg_provision
   ansible.builtin.debug:
     msg: |
-      ╭───────────────────────────────────────────────────────────────────╮
-      │                                                                   │
-      │                     HOST CONNECTION WARNING.                      │
-      │                                                                   │
-      ├───────────────────────────────────────────────────────────────────╯
-      │ Connection WILL fail for all tasks if host has already init'ed,
-      │ including 'Gathering Facts' and role tasks below. In this case the
-      │ Host may already be provisioned; use standard ansible playbook.
-      │
-      │ This is expected.
 
-- name: 'Install packages'
-  when: init_package_install_enable
+      ⚠ HOST CONNECTION WARNING ⚠
+
+      Connection WILL fail for all tasks if host has already init'ed,
+      including 'Gathering Facts' and role tasks below. In this case the
+      Host may already be provisioned; use standard ansible playbook.
+      │
+      ✔ This is expected.
+
+- name: 'Install | packages'
+  when: init_flg_packages
   ansible.builtin.include_role:
     name: 'r_pufky.deb.apt'
   vars:
     apt_packages:
-      - '{{ init_role_packages if init_package_install_enable else [] }}'
-    apt_package_update_cache: true
-    apt_dist_upgrade_enable: '{{ init_dist_upgrade_enable }}'
+      - '{{ init___packages if init_flg_packages else [] }}'
+    apt_srv_package_update_cache: true
+    apt_srv_dist_upgrade_always: '{{ init_flg_dist_upgrade }}'
 
-- name: 'Manage accounts'
-  when: init_account_management_enable
+- name: 'Users'
+  when: init_flg_users
   block:
     # Modifying active user will result in non-deterministic results.
-    - name: 'Add user accounts required for ansible management'
+    - name: 'Users | add user accounts required for ansible management'
       ansible.builtin.include_role:
         name: 'r_pufky.deb.users'
         tasks_from: 'user.yml'
-      loop: '{{ init_accounts_users | default([]) }}'
+      loop: '{{ init_cfg_users | default([]) }}'
       loop_control:
         loop_var: 'user'
 
     # Remove after for cases where we are logged in as root and root disabled.
-    - name: 'Remove user accounts'
+    - name: 'Users | remove user accounts'
       ansible.builtin.user:
         name: '{{ item }}'
         force: false
         remove: false
         state: 'absent'
-      loop: '{{ init_accounts_users_absent | default([]) }}'
+      loop: '{{ init_cfg_users_absent | default([]) }}'
 
-- name: 'Manage SSH/SSHD'
-  when: init_ssh_management_enable
+- name: 'SSH'
+  when: init_flg_ssh
   ansible.builtin.include_role:
     name: 'r_pufky.deb.ssh'

@@ -3,14 +3,16 @@
 # Init (Provision) Role Options
 ###############################################################################
 
-# Last time {ROLE} options were validated against a default configuration.
-init_role_validate_date: '2025-08-22'
-init_role_validate_release: 'trixie'
+init___release: "{{ {} | r_pufky.data.v3(
+
+    _date='2026-03-13',
+    _debian='trixie',
+  ) }}"
 
 ###############################################################################
 # APT Packages
 ###############################################################################
 
-init_role_packages:
+init___packages:
   - 'sudo'  # users requiring sudo.
   - 'ssh'  # ssh, sshd.
