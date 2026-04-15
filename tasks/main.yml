@@ -14,17 +14,17 @@
 # * https://www.redhat.com/sysadmin/harden-new-system-ansible
 
 # Blocks will not catch unreachable hosts. Warn early.
-- name: '⚠ HOST CONNECTION WARNING ⚠'
+- name: '🛆 HOST CONNECTION WARNING 🛆'
   when: init_flg_msg_provision
   ansible.builtin.debug:
     msg: |
 
-      ⚠ HOST CONNECTION WARNING ⚠
+      🛆 HOST CONNECTION WARNING 🛆
 
       Connection WILL fail for all tasks if host has already init'ed,
       including 'Gathering Facts' and role tasks below. In this case the
       Host may already be provisioned; use standard ansible playbook.
-      │
+
       ✔ This is expected.
 
 - name: 'Install | packages'
